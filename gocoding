@@ -254,7 +254,7 @@ func Equipment(w http.ResponseWriter, r *http.Request) {
 	makers2 = append(makers2, maker2)
 
 	if maker == "toyota" {
-		output, err := json.MarshalIndent(&makers, "", "\t\t")
+		output, err := json.MarshalIndent(xxxx)
 		
 		if err != nil {
 			fmt.Println("Error", err)
