@@ -1,0 +1,770 @@
+package main
+
+import (
+	"html/template"
+  	"reflect"
+	"database/sql"
+	"fmt"
+	"strconv"
+//	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/handlers"
+	"log"
+	"net/http"
+//	"html/template"
+
+	"os"
+	"os/signal"
+	"github.com/braintree/manners"
+	"path"
+	"encoding/json"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+)
+
+
+type Maker struct {
+	Toyota string
+	Honda string
+		}
+ 
+type Makers []Maker
+
+type Modelname struct {
+	Model string
+		}
+
+type Codename struct {
+	Code string
+		}
+
+
+//type Modelnames  []Modelname
+
+const (
+	DBHost  = "192.168.1.4"
+	DBPort  = ":3306"
+	DBUser  = "yoshi"
+	DBPass  = "sealand"
+	DBDbase = "cms"
+	PORT    = ":8080"
+)
+
+var database *sql.DB
+var db *sql.DB
+//var db2 *sql.DB
+var modelname *sql.DB
+var modelname1 *sql.DB
+var carname *sql.DB
+var carname1 *sql.DB
+var carname2 *sql.DB
+var carname3 *gorm.DB
+var class1 *sql.DB
+var milage1 *sql.DB
+var color1 *sql.DB
+var shakenzan1 *sql.DB 
+var jibaiseki1 *sql.DB 
+
+var maker string
+var shashu string
+var code string
+var grade string
+var tranz string
+var nenshiki string
+var class string
+var old string
+var nen string
+var dep int
+var coloradjust int
+var price int
+var shakenzan int
+var jibaisekizan int
+var jibaisekiclass string
+//var toshi int
+//var color_id
+
+var Rows *sql.Rows
+func init(){
+	
+	db, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/cms")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+
+	database = db
+
+	modelname, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/modelname")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+ 	
+	modelname1 = modelname
+
+
+	carname, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/14detail")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+ 	
+	carname1 = carname
+
+	class, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/class")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+ 	
+	class1 = class
+
+	milage, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/milage")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+
+	milage1 = milage
+
+	color, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/1color")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+
+	color1 = color
+
+	shakenzan, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/shaken")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+
+	shakenzan1 = shakenzan
+
+	jibaiseki, err := sql.Open("mysql", "yoshi:sealand@tcp(192.168.1.4:3306)/jibaiseki")
+	if err != nil {
+		log.Println("Couldn't connect!")
+		log.Println(err.Error)
+	}
+
+	jibaiseki1 = jibaiseki
+
+	
+
+}
+type Page struct {
+	Title   string
+	Content string
+	Date    string
+}
+
+func ServePage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	pageID := vars["id"]
+	thisPage := Page{}
+	fmt.Println(pageID)
+	err := database.QueryRow("SELECT 
+  if err != nil {
+		log.Println(err)
+		log.Println("Couldn't get page!")
+	}
+	html := `<html><head><title>` + thisPage.Title + `</title></head><body><h1>` + thisPage.Title + `</h1><div>` + thisPage.Content + `</div></body></html>`
+	fmt.Fprintln(w, html)
+}
+
+func Handler(w http.ResponseWriter, r *http.Request) {
+	html := `<html><head><title>` + "Title" + `</title></head><body><h1>` + "Body" + `</h1><div>` + "Div" + `</div></body></html>`
+	fmt.Fprintln(w, html)
+}
+
+func jppost(w http.ResponseWriter, r *http.Request) {
+	html := `<!DOCTYPE html><html>
+  <head>
+    <title>JavaScript &amp; jQuery - Chapter 8: Ajax &amp; JSON - .post()</title>
+    <link rel="stylesheet" href="css/c08.css" />
+  </head>
+  <body>
+
+    <header>
+      <h1>THE MAKER BUS</h1>
+    </header>
+
+    <section id="content">
+      <div class="half">
+        <img src="img/register-circuitboard.jpg" alt="circuit board" />
+      </div>
+      <div class="half">
+        <form id="register" action="http://localhost:8080/register" method="post">
+          <h2>Register</h2>
+
+	<label for="name">Username</label><input type="text" id="name" name="name" />
+ <!--         <label for="pwd">Password</label><input type="password" id="pwd" name="pwd" />
+          <label for="email">Email</label><input type="email" id="email" name="email" /> -->
+	<input type="submit" value="Join" />
+          
+        </form>
+      </div>
+    </section>
+
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jq-post.js"></script>
+
+  </body>
+</html>`
+	fmt.Fprintln(w, html)
+}
+
+//func Process(w http.ResponseWriter, r *http.Request) {
+//	t, _ :=template.ParseFiles("example.html")
+//	t.Execute(w, "")
+//}
+
+func Getjson(w http.ResponseWriter, r *http.Request) {
+	t, _ :=template.ParseFiles("templates/getJSON.html")
+	t.Execute(w, "")
+
+//	html := `<!DOCTYPE html>
+
+
+//	fmt.Fprintln(w, html)
+
+}
+
+
+func Equipment(w http.ResponseWriter, r *http.Request) {
+	queryParam := r.URL.Query()
+	maker = queryParam.Get("name")
+
+	var maker1 Maker = Maker{
+			Toyota: "toyota",
+			Honda: "honda",
+		}	
+
+	var maker2 Maker = Maker{
+			Toyota: "toyota2",
+			Honda: "honda2",
+		}	
+
+
+	var makers Makers
+	var makers2 Makers
+	makers = append(makers, maker1)
+	makers2 = append(makers2, maker2)
+
+	if maker == "toyota" {
+		output, err := json.MarshalIndent(&makers, "", "\t\t")
+		
+		if err != nil {
+			fmt.Println("Error", err)
+			return
+		}
+		fmt.Println(output)
+		
+		
+		rows, err1 := modelname1.Query(xxxx))
+		
+
+		v := reflect.ValueOf(rows)
+		fmt.Println(v.Type())
+
+		if err1 == sql.ErrNoRows {
+			log.Println("no row")
+		} else if err1 != nil {
+			log.Println(err1)
+		}
+
+		var modelnames []Modelname
+
+		for rows.Next() {
+			m := Modelname{}
+			err = rows.Scan(&m.Model)
+			if err != nil {
+				return
+			}
+			modelnames = append(modelnames, m)
+		}
+
+		output1, err := json.MarshalIndent(&modelnames, "", "\t\t")
+
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(output1)
+		
+
+
+	} else if maker == "Honda" {
+	}
+
+	if maker == "model" {
+		
+		output, err := json.MarshalIndent(&makers2, "", "\t\t")
+		
+
+
+		if err != nil {
+			fmt.Println("Error", err)
+			return
+		}
+		
+		if err != nil {
+		return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(output)
+
+	}
+
+}
+
+
+func Model(w http.ResponseWriter, r *http.Request) {
+	var query string 
+	queryParam := r.URL.Query()
+	shashu := queryParam.Get("name")
+	num := (len(queryParam))
+	if num == 2 {
+		query = xxxx
+		rows, err1 := carname1.Query(xxxx)
+		Rows = rows
+		if err1 != nil {
+			fmt.Println(err1)
+			return
+		}
+		send(w, r, Rows)
+	}else if num == 3{
+		code = queryParam.Get("code")
+		query = xxxx
+		rows, err1 := carname1.Query(xxxx)
+		Rows = rows
+		if err1 != nil {
+			fmt.Println(err1)
+			return
+		}
+		send(w, r, Rows)
+	}else if num == 4{
+		grade = queryParam.Get("grade")
+
+		query = xxxx
+		fmt.Println(query)
+		rows, err1 := carname1.Query(xxxx)
+		Rows = rows
+		if err1 != nil {
+			fmt.Println(err1)
+			return
+		}
+		send(w, r, Rows)
+	}else if num == 5{
+		tranz := queryParam.Get("tranz")
+		
+query = xxxx
+		rows, err1 := carname1.Query(xxxx)
+		Rows = rows
+		if err1 != nil {
+			fmt.Println(err1)  
+			return
+		}
+		send(w, r, Rows)
+  	}else if num == 10{
+
+
+
+		maker := queryParam.Get("maker")
+		shashu := queryParam.Get("name")
+		code := queryParam.Get("code")
+		grade := queryParam.Get("grade")
+		tranz := queryParam.Get("tranz")
+		nenshiki := queryParam.Get("nenshiki")
+		milage := queryParam.Get("milage")
+		color_id := queryParam.Get("color")
+		shakenzangetsu := queryParam.Get("shakenzan")
+		jibaisekizangetsu := queryParam.Get("jibaisekizan")
+		
+		stmtOut, err1 := class1.Prepare(xxxx)
+		if err1 != nil {
+  			panic(err1.Error())
+		}
+//		defer stmtOut.Close()
+		err2 := stmtOut.QueryRow(code).Scan(xxxx)
+		if err2 != nil {
+			fmt.Println(err2)  
+			return
+		}
+
+		var i int
+
+		i, _ = strconv.Atoi(nenshiki)
+		i = 29 - i
+		
+		old = strconv.Itoa(i)
+		old = "H" + old
+		stmtOut1, err1 := milage1.Prepare(xxxx)
+		if err1 != nil {
+  			panic(err1.Error())
+		}
+		
+		err3 := stmtOut1.QueryRow(milage).Scan(xxxx)
+		if err3 != nil {
+			fmt.Println(err3)  
+			return
+		}
+		fmt.Println("dep")
+		fmt.Println(dep)
+//		color_id := queryParam.Get("color")
+		
+		stmtOut4, err2 := color1.Prepare(xxxx)
+		
+		if err2 != nil {
+  			panic(err1.Error())
+		}
+
+		err4 := stmtOut4.QueryRow(color_id, class ).Scan(xxxx)
+		if err4 != nil {
+			fmt.Println(err4)  
+			return
+		}
+		fmt.Println(coloradjust)
+
+
+
+
+
+
+		stmtOut11, err12 := shakenzan1.Prepare(xxxx)
+		
+		if err12 != nil {
+  			panic(err1.Error())
+		}
+
+		err14 := stmtOut11.QueryRow(class ).Scan(xxxx)
+			fmt.Println(err14)  
+			return
+		}
+		fmt.Println("shakenzan")
+		fmt.Println(shakenzan)
+
+
+		stmtOut12, err13 := jibaiseki1.Prepare(xxxx)
+
+		if class == "light" {
+			jibaisekiclass = "light"
+		}else{
+			jibaisekiclass = "others"
+		}
+
+//		stmtOut1, err1 := milage1.Prepare(xxxx)
+		 
+		if err13 != nil {
+  			panic(err13.Error())
+		}
+
+		err15 := stmtOut12.QueryRow(jibaisekiclass ).Scan(xxxx)
+		if err15 != nil {
+			fmt.Println(err15)  
+			return
+		}
+		fmt.Println("jibaisekizan")
+		fmt.Println(jibaisekizan)
+
+
+
+
+		nenshiki = "H" + nenshiki
+
+
+		query = xxxx
+		err10 := carname1.QueryRow(xxxx)
+		if err10 != nil {
+  			panic(err10.Error())
+		}
+
+		fmt.Println(price)
+
+		if err3 != nil {
+  			panic(err3.Error())
+		}
+		
+		fmt.Println(price, dep, coloradjust, shakenzan, jibaisekizan)
+
+		price = price - dep + coloradjust + shakenzan + jibaisekizan
+
+		fmt.Println("price")
+		fmt.Println(price)
+
+//		price = price / 10
+		
+		fmt.Println("price")
+		fmt.Println(price)
+		sendp(w, r, price)
+
+
+	}else {}
+		
+}
+
+func send(w http.ResponseWriter, r *http.Request, Rows *sql.Rows){
+
+	var codes []Codename
+
+	fmt.Println(Rows)
+
+	for Rows.Next() {
+		l := Codename{}
+		err := Rows.Scan(&l.Code)
+		if err != nil {
+			return
+		}
+		
+		codes = append(codes, l)
+	}
+	fmt.Println("class")
+	fmt.Println(codes)	
+		
+		
+				
+		output1, err := json.MarshalIndent(&codes, "", "\t\t")
+		
+		if err != nil {
+			fmt.Println("Error", err)
+			return
+		}
+
+		
+		w.Header().Set("Content-Type", "application/json")
+
+		w.Write(output1)
+		
+}
+
+
+func sendp(w http.ResponseWriter, r *http.Request, price int){
+
+//	var codes []Codename
+
+//	fmt.Println(Rows)
+
+//	for Rows.Next() {
+//		l := Codename{}
+//		err := Rows.Scan(&l.Code)
+//		if err != nil {
+//			return
+//		}
+		
+//		codes = append(codes, l)
+//	}
+//	fmt.Println("class")
+//	fmt.Println(codes)	
+		
+		
+				
+		output1, err := json.MarshalIndent(&price, "", "\t\t")
+		
+		if err != nil {
+			fmt.Println("Error", err)
+			return
+		}
+
+		
+		w.Header().Set("Content-Type", "application/json")
+
+		w.Write(output1)
+		
+}
+
+
+
+func Process(w http.ResponseWriter, r *http.Request) {
+	html := `<!DOCTYPE html>
+<html>
+  <head>
+    <title>JavaScript &amp; jQuery - Chapter 8: Ajax &amp; JSON - Example</title>
+    <link rel="stylesheet" href="css/c08.css" />
+  </head>
+  <body>
+
+    <header>
+      <h1>THE MAKER BUS</h1>
+      <nav>
+        <a href="jq-load.html">HOME</a>
+        <a href="jq-load2.html">ROUTE</a>
+        <a href="jq-load3.html">TOYS</a>
+        <a href="example.html" class="current">TIMETABLE</a>
+      </nav>
+    </header>
+
+    <section id="content">
+      <div id="container">
+        <h2>Roll up! Roll up! It's the maker bus...</h2>
+
+        <div class="third">
+          <div id="event">
+            <a id="ca" href="ca.html"><img src="/img/map-ca.png" alt="San Francisco" />San Francisco, CA</a>
+            <a id="tx" href="tx.html"><img src="/img/map-tx.png" alt="Austin, TX" />Austin, TX</a>
+            <a id="ny" href="ny.html"><img src="/img/map-ny.png" alt="New York, NY" />New York, NY</a>
+          </div>
+        </div>
+        <div class="third">
+          <div id="sessions">
+            <p>Select an event from the left</p>
+          </div>
+        </div>
+        <div class="third">
+          <div id="details"></div>
+        </div>
+
+      </div><!-- #container -->
+    </section><!-- #content -->
+
+
+    <script src="/js/jquery-1.11.0.min.js"></script>
+    <script src="/js/example.js"></script>
+<!--    <script src="/img/jquery-1.11.0.min.js"></script>
+    <script src="/img/example.js"></script> --> 
+
+
+  </body>
+</html>`
+fmt.Fprintln(w, html)
+}
+
+func Register(w http.ResponseWriter, r *http.Request) {
+//	vars := mux.Vars(r)
+//	nameID := vars["name"]
+	
+	nameID := r.FormValue("name")
+	
+	
+	html := `<html><head><title>` + "Title" + `</title></head><body><h1>` + "Body" + `</h1><div>` + nameID + `</div></body></html>`
+	fmt.Fprintln(w, html)
+	
+	
+	
+
+//	fmt.Fprintln(w, nameID)
+//	fmt.Fprintln(w, "nameID")
+}
+
+func Jsondata(w http.ResponseWriter, r *http.Request) {
+}
+
+func serveimage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "/img/map-ca.png")
+}
+func main() {
+	dbConn := fmt.Sprintf("%s:$s:%s:%s@/%s", DBHost, DBPort, DBUser, DBPass, DBDbase)
+	fmt.Println(dbConn)
+
+	pr := newPathResolver()
+	pr.Add("GET /hello", hello)
+	pr.Add("GET /jppost", jppost)
+
+//	pr.Add("GET /servepage", ServePage)
+
+	pr.Add("POST /register", Register)
+	pr.Add("GET /process", Process)
+	pr.Add("GET /getjson", Getjson)
+	pr.Add("GET /equipment", Equipment)
+	pr.Add("GET /model", Model)
+//	pr.Add("GET /data/rates.json", Jsondata)
+//	dir := http.Dir("./files")
+//	handler := http.StripPrefix("/static/", http.FileServer(dir))
+
+
+	dir1 := http.Dir("./js")
+	handler1 := http.StripPrefix("/js/", http.FileServer(dir1))
+
+	//pr.Add("GET /static/*", handler.ServeHTTP)
+
+
+	dir := http.Dir("./img")
+	handler := http.StripPrefix("/img/", http.FileServer(dir))
+	
+	dir2 := http.Dir("./data")
+	handler2 := http.StripPrefix("/data/", http.FileServer(dir2))
+	
+	dir3 := http.Dir("./css")
+	handler3 := http.StripPrefix("/css/", http.FileServer(dir3))
+
+
+
+	pr.Add("GET /img/*", handler.ServeHTTP)
+
+	pr.Add("GET /js/*", handler1.ServeHTTP)
+
+	pr.Add("GET /data/*", handler2.ServeHTTP)
+
+	pr.Add("GET /css/*", handler3.ServeHTTP)
+
+
+
+
+//	http.ListenAndServe(":8080", pr)
+	
+	routes := mux.NewRouter()
+	routes.HandleFunc("/page/{id:[0-9]+}", ServePage)
+//	routes.HandleFunc("/", Handler)
+//	routes.HandleFunc("/jppost", jppost)
+//	routes.HandleFunc("/register", Register)
+//	routes.HandleFunc("/process", Process)
+//	routes.HandleFunc("/test.png", serveimage)
+//	routes.HandleFunc("/img/map-ca.png", serveimage)
+
+//	http.Handle("/img/map-ca.png", http.FileServer(http.Dir("/img/map-ca.png")))
+//	http.Handle("/public/img/map-ca.png", http.FileServer(http.Dir("/home/yoshitaka/デスクトップ/goserver/public/img/map-ca.png")))
+
+	ch := make(chan os.Signal)
+	signal.Notify(ch, os.Interrupt, os.Kill)
+	go listenForShutdown(ch)
+
+//	manners.ListenAndServe(":8080", routes)
+//	manners.ListenAndServe(":8080", pr)
+	err := manners.ListenAndServe(":8080", handlers.CompressHandler(pr))
+	if err!= nil {
+	
+		log.Fatal("error starting http erver : ", err)
+		log.Println("error1 starting http erver : ", err)
+		return
+	}
+
+}
+
+func listenForShutdown(ch <-chan os.Signal) {
+	<-ch
+	manners.Close()
+}
+
+func newPathResolver() *pathResolver {
+	return &pathResolver{make(map[string]http.HandlerFunc)}
+}
+
+type pathResolver struct {
+	handlers map[string]http.HandlerFunc
+}
+
+func (p *pathResolver) Add(path string, handler http.HandlerFunc) {
+	p.handlers[path] = handler
+}
+
+func (p *pathResolver) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	check := req.Method + " " + req.URL.Path
+	for pattern, handlerFunc := range p.handlers {
+		if ok, err := path.Match(pattern, check); ok && err == nil {
+			handlerFunc(res, req)
+			return
+		} else if err != nil {
+			fmt.Fprint(res, err)
+		}
+	}
+
+	http.NotFound(res, req)
+}
+
+func hello(res http.ResponseWriter, req *http.Request) {
+	query := req.URL.Query()
+	name := query.Get("name")
+	if name == "" {
+		name = "Inigo Montoya"
+	}
+	fmt.Fprint(res, "Hello, my name is ", name)
+}
